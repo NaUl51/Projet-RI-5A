@@ -19,6 +19,8 @@ II. Des tâches à faire
    L'étape bibliothèque (sourcer):
      + Time-series multivariate
      + Modèle pour detecter anomalies
-     + modèles de deep learning
-     + 
+     + Modèles de deep learning
+ 2. 22/10/2024
+     + Enrichir, commencer la rédaction de l'état de l'art
+     + Explorer les données : 
 
