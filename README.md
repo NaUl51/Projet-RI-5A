@@ -1,4 +1,11 @@
 # Projet-RI-5A
+Planning prévisionnel
+ + Mardi 8 octobre 2024 : première séance de projet
+ + La semaine du 6 janvier 2025 : pré-soutenance sur rendez vous (à voir avec Paul Scanlan) (à confirmer)
+ + Jeudi 23 janvier 2025 : Dépôt du rapport sur moodle dans l'activité dédiée (.pdf)
+ + Jeudi 23 janvier 2025 : Dépôt de l'abstract français 5 lignes + image illustrative sur moodle dans l'activité dédiée
+ + Du 28 au 29 janvier 2025 : soutenances de projets (planning prévisionnel à définir). Présence d'un encadrant obligatoire
+
 I. Objectif général de projet
 
 1. But concret
