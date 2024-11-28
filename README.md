@@ -23,4 +23,7 @@ II. Des tâches à faire
  2. 22/10/2024
      + Enrichir, commencer la rédaction de l'état de l'art
      + Explorer les données : 
-
+3. 05/11/2024
+     + Lire le fichier présentant les variables pour comprendre le sens des variables et obtenir une idée générale de l'ensemble de données.
+     + Faire une analyse descriptive des données (évolution temporelle, corrélation, etc.).
+     + Implémenter un auto-encodeur (LSTM) -> Avantages et inconvénients -> Trouver d'autres méthodes pour tester.
