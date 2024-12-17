@@ -131,15 +131,17 @@ def reduce_timesteps(data, new_timesteps):
 new_timesteps = 1000
 train_normal_data_reduced = reduce_timesteps(train_normal_data, new_timesteps)
 test_normal_data_reduced = reduce_timesteps(test_normal_data, new_timesteps)
+test_anomaly_data_reduced = reduce_timesteps(test_anomaly_data, new_timesteps)
 
-import zipfile
+
+#import zipfile
 
 # Chemin vers le fichier ZIP
-zip_path = "autoencoder_models.keras"
+#zip_path = "autoencoder_models.keras"
 
 # Extraire les fichiers
-with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-    zip_ref.extractall("extracted_model")
+#with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+#    zip_ref.extractall("extracted_model")
 
 
 
@@ -167,20 +169,41 @@ outputs = tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(135))(decoded)
 autoencoder = tf.keras.Model(inputs, outputs)
 
 
-# Charger les poids
-weights_path = "extracted_model/model.weights.h5"
-autoencoder.load_weights(weights_path)
+import zipfile
+import os
 
+# Chemin vers le fichier ZIP contenant le modèle
+zip_path = os.path.join(os.path.dirname(__file__), "autoencoder_model.keras")
+
+# Dossier temporaire pour extraire les fichiers
+extraction_dir = os.path.join(os.path.dirname(__file__), "extracted_model")
+
+# Extraire les fichiers si nécessaire
+if not os.path.exists(extraction_dir):
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(extraction_dir)
+        print(f"Fichiers extraits dans : {extraction_dir}")
+
+# Chemin des poids directement dans extracted_model
+weights_path = os.path.join(extraction_dir, "model.weights.h5")
+
+# Vérification de l'existence des poids
+if not os.path.exists(weights_path):
+    raise FileNotFoundError(f"Le fichier de poids est introuvable : {weights_path}")
+
+# Charger les poids dans le modèle
+autoencoder.load_weights(weights_path)
+print(f"Poids chargés depuis : {weights_path}")
 
 # Reconstruire les séries temporelles
-reconstructed_data = autoencoder.predict(test_normal_data_reduced)
-
+reconstructed_data_train = autoencoder.predict(train_normal_data_reduced)
+reconstructed_data_test = autoencoder.predict(test_anomaly_data_reduced)
 # Calculer l'erreur de reconstruction
-reconstruction_errors = np.mean(np.square(test_normal_data_reduced - reconstructed_data), axis=(1, 2))
-
+reconstruction_errors_train = np.mean(np.square(train_normal_data_reduced - reconstructed_data_train), axis=(1, 2))
+reconstruction_errors_test = np.mean(np.square(test_anomaly_data_reduced - reconstructed_data_test), axis=(1, 2))
 # Détecter les anomalies
-threshold = np.percentile(reconstruction_errors, 95)
-anomalies = reconstruction_errors > threshold
+threshold = np.percentile(reconstruction_errors_train, 95)
+anomalies = reconstruction_errors_test > threshold
 print(f"Nombre d'anomalies détectées : {np.sum(anomalies)}")
 
 
@@ -218,6 +241,6 @@ def plot_anomalies(reconstruction_errors, threshold, filename="anomaly_detection
 # Exemple d'utilisation
 # reconstruction_errors = np.mean(np.square(test_normal_data_reduced - reconstructed_data), axis=(1, 2))
 # threshold = np.percentile(reconstruction_errors, 95)
-plot_anomalies(reconstruction_errors, threshold, filename="anomaly_detection.png")
+plot_anomalies(reconstruction_errors_test, threshold, filename="anomaly_detection.png")
 
 
