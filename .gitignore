@@ -1,1 +1,4 @@
 Dataset/
+.ipynb_checkpoints/
+.virtual_documents/
+.Model_trained/
