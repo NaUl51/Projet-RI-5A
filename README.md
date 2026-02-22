@@ -35,11 +35,15 @@ Projet-RI-5A/
 │   ├── TimeSeries_Scenario_*.h5        # Normal flight scenarios
 │   └── *_shift_on___flight_director_*  # Anomalous scenarios (injected shift)
 ├── Images/
-│   ├── 1_avant_downsampling.png        # Signal visualization before downsampling
-│   ├── 2_apres_downsampling.png        # Signal visualization after downsampling
-│   ├── 3_loss_plot.png                 # LSTM Autoencoder training loss
-│   ├── 4_loss_plot_unet.png            # LSTM U-Net Autoencoder training loss
-│   └── 5_loss_plot_transformer.png     # Transformer Autoencoder training loss
+│   ├── avant_downsampling.png                              # Signal before downsampling
+│   ├── apres_downsampling.png                              # Signal after downsampling
+│   ├── reconstruction_lstm_flight_director_pitch_sample14.png
+│   ├── reconstruction_lstm_flight_director_roll_sample14.png
+│   ├── reconstruction_unet_flight_director_pitch_sample14.png
+│   ├── reconstruction_unet_flight_director_roll_sample14.png
+│   ├── reconstruction_transformer_flight_director_pitch_sample14.png
+│   ├── reconstruction_transformer_flight_director_roll_sample14.png
+│   └── training_time_comparison.png                        # Training time bar chart
 ├── Model_trained/
 │   ├── lstm_autoencoder_model.h5       # Trained LSTM Autoencoder
 │   ├── transformer_autoencoder_model.h5
@@ -62,7 +66,7 @@ Projet-RI-5A/
 
 | | Before Downsampling | After Downsampling |
 |---|---|---|
-| **Signal** | ![before](Images/1_avant_downsampling.png) | ![after](Images/2_apres_downsampling.png) |
+| **Signal** | ![before](Images/avant_downsampling.png) | ![after](Images/apres_downsampling.png) |
 
 ---
 
@@ -70,34 +74,37 @@ Projet-RI-5A/
 
 All models follow an **autoencoder** paradigm: trained only on normal data, anomalies are flagged when the reconstruction error exceeds a learned threshold.
 
-### 1. LSTM Autoencoder
-- Encoder/decoder built with stacked LSTM layers
-- Captures temporal dependencies in sequential data
-- Training loss:
-
-  ![LSTM loss](Images/3_loss_plot.png)
-
-### 2. LSTM U-Net Autoencoder
-- Skip connections between encoder and decoder (U-Net style)
-- Preserves fine-grained temporal features
-- Training loss:
-
-  ![U-Net loss](Images/4_loss_plot_unet.png)
-
-### 3. Transformer Autoencoder
-- Self-attention mechanism replaces recurrence
-- Better at capturing long-range dependencies
-- Training loss:
-
-  ![Transformer loss](Images/5_loss_plot_transformer.png)
+| Model | Architecture | Key property |
+|---|---|---|
+| LSTM Autoencoder | Stacked LSTM encoder-decoder | Baseline temporal model |
+| LSTM U-Net Autoencoder | LSTM + skip connections | Better local feature preservation |
+| Transformer Autoencoder | Multi-head self-attention | Long-range dependency capture |
 
 ---
 
 ## Results
 
-Models are evaluated on their ability to reconstruct normal scenarios with low error, and to produce **high reconstruction error on anomalous scenarios** (with injected shift).
+### Reconstruction Comparison (sample #14, anomalous scenario)
 
-Full quantitative results and analysis are available in [Report.pdf](Report.pdf).
+Each model is applied to an anomalous scenario and its output is compared against the **injected anomalous signal** and the **ground truth** (original clean signal). The closer the reconstruction is to the ground truth, the better the model detects and corrects the anomaly.
+
+#### `flight_director_pitch`
+
+| LSTM Autoencoder | LSTM U-Net Autoencoder | Transformer Autoencoder |
+|---|---|---|
+| ![](Images/reconstruction_lstm_flight_director_pitch_sample14.png) | ![](Images/reconstruction_unet_flight_director_pitch_sample14.png) | ![](Images/reconstruction_transformer_flight_director_pitch_sample14.png) |
+
+#### `flight_director_roll`
+
+| LSTM Autoencoder | LSTM U-Net Autoencoder | Transformer Autoencoder |
+|---|---|---|
+| ![](Images/reconstruction_lstm_flight_director_roll_sample14.png) | ![](Images/reconstruction_unet_flight_director_roll_sample14.png) | ![](Images/reconstruction_transformer_flight_director_roll_sample14.png) |
+
+### Training Time Comparison
+
+![Training Time](Images/training_time_comparison.png)
+
+Full quantitative analysis and discussion are available in [Report.pdf](Report.pdf).
 
 ---
 
